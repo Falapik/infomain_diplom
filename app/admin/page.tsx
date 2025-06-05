@@ -3,15 +3,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import { tabItems as initialTabItems } from "../catalog/catalogData";
 import { motion, AnimatePresence } from "framer-motion";
-export const dynamic = "force-dynamic";
 
 const Admin = () => {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
-  const [tabItems, setTabItems] = useState(() => {
-    const savedItems = localStorage.getItem("tabItems");
-    return savedItems ? JSON.parse(savedItems) : initialTabItems;
-  });
+  const [tabItems, setTabItems] = useState(initialTabItems);
+
+  useEffect(() => {
+    // Загружаем из localStorage только на клиенте
+    const savedItems =
+      typeof window !== "undefined" ? localStorage.getItem("tabItems") : null;
+    if (savedItems) {
+      setTabItems(JSON.parse(savedItems));
+    }
+  }, []);
 
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -23,7 +28,9 @@ const Admin = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    localStorage.setItem("tabItems", JSON.stringify(tabItems));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tabItems", JSON.stringify(tabItems));
+    }
   }, [tabItems]);
 
   const handleEditClick = (item: any) => {
