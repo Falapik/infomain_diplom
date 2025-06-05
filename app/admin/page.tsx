@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { tabItems as initialTabItems } from "../catalog/catalogData";
 import { motion, AnimatePresence } from "framer-motion";
+export const dynamic = "force-dynamic";
 
 const Admin = () => {
   const [password, setPassword] = useState("");
