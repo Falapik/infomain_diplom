@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // Игнорировать ошибки TypeScript при сборке
   },
+  onDemandEntries: {
+    maxInactiveAge: 60 * 60 * 1000, // 1 hour
+  },
 };
 
 export default nextConfig;
