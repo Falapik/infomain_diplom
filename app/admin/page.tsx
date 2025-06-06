@@ -106,20 +106,24 @@ const Admin = () => {
       }
     }
 
-    let imageUrl = selectedItem.imageSrc; // Изначально — текущий URL
+    let imagePath = selectedItem.imageSrc;
 
     if (imageFile) {
-      const uploadedUrl = await uploadImage(); // Получаем URL из Blob
-      if (uploadedUrl) {
-        imageUrl = uploadedUrl; // Обновляем URL
+      try {
+        const uploadedPath = await uploadImage();
+        if (uploadedPath) {
+          imagePath = uploadedPath;
+        }
+      } catch (error) {
+        console.error("Ошибка загрузки изображения:", error);
       }
     }
 
     const updatedItem = {
       ...selectedItem,
-      imageSrc: imageUrl, // Сохраняем URL, а не файл
       price: Number(selectedItem.price),
       weight: Number(selectedItem.weight),
+      imageSrc: imagePath || selectedItem.imageSrc,
     };
 
     if (isCreating) {
