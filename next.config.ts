@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   onDemandEntries: {
     maxInactiveAge: 60 * 60 * 1000, // 1 hour
   },
+  images: {
+    domains: ["infomain-diplom.vercel.app"],
+  },
 };
 
 export default nextConfig;
