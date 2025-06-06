@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     maxInactiveAge: 60 * 60 * 1000, // 1 hour
   },
   images: {
-    domains: ["infomain-diplom.vercel.app"],
+    domains: ["infomain-diplom.vercel.app", "localhost"],
   },
 };
 
