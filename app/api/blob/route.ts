@@ -9,9 +9,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
   }
 
+  // Загружаем файл в Vercel Blob
   const blob = await put(file.name, file, {
     access: "public",
   });
 
-  return NextResponse.json({ filePath: blob.url });
+  // Возвращаем URL изображения
+  return NextResponse.json({ url: blob.url });
 }

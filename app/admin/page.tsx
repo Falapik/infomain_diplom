@@ -90,10 +90,10 @@ const Admin = () => {
         throw new Error("Ошибка загрузки изображения");
       }
 
-      const data = await response.json();
-      return data.filePath;
+      const { url } = await response.json(); // Получаем URL из Blob
+      return url; // Возвращаем только URL
     } catch (error) {
-      console.error("Ошибка загрузки:", error);
+      console.error("Ошибка:", error);
       return null;
     }
   };
@@ -106,24 +106,20 @@ const Admin = () => {
       }
     }
 
-    let imagePath = selectedItem.imageSrc;
+    let imageUrl = selectedItem.imageSrc; // Изначально — текущий URL
 
     if (imageFile) {
-      try {
-        const uploadedPath = await uploadImage();
-        if (uploadedPath) {
-          imagePath = uploadedPath;
-        }
-      } catch (error) {
-        console.error("Ошибка загрузки изображения:", error);
+      const uploadedUrl = await uploadImage(); // Получаем URL из Blob
+      if (uploadedUrl) {
+        imageUrl = uploadedUrl; // Обновляем URL
       }
     }
 
     const updatedItem = {
       ...selectedItem,
+      imageSrc: imageUrl, // Сохраняем URL, а не файл
       price: Number(selectedItem.price),
       weight: Number(selectedItem.weight),
-      imageSrc: imagePath || selectedItem.imageSrc,
     };
 
     if (isCreating) {
