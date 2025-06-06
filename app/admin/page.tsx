@@ -81,7 +81,7 @@ const Admin = () => {
     formData.append("file", imageFile);
 
     try {
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/blob", {
         method: "POST",
         body: formData,
       });
