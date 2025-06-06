@@ -108,14 +108,14 @@ const Admin = () => {
 
     let imagePath = selectedItem.imageSrc;
 
-    // Upload new image if selected
     if (imageFile) {
-      const uploadedPath = await uploadImage();
-      if (uploadedPath) {
-        imagePath = uploadedPath;
-      } else {
-        alert("Не удалось загрузить изображение");
-        return;
+      try {
+        const uploadedPath = await uploadImage();
+        if (uploadedPath) {
+          imagePath = uploadedPath;
+        }
+      } catch (error) {
+        console.error("Ошибка загрузки изображения:", error);
       }
     }
 
@@ -123,16 +123,20 @@ const Admin = () => {
       ...selectedItem,
       price: Number(selectedItem.price),
       weight: Number(selectedItem.weight),
-      imageSrc: imagePath,
+      imageSrc: imagePath || selectedItem.imageSrc,
     };
 
     if (isCreating) {
       const updatedItems = { ...tabItems };
+      if (!updatedItems[newItemCategory]) {
+        updatedItems[newItemCategory] = [];
+      }
       updatedItems[newItemCategory] = [
         ...updatedItems[newItemCategory],
         updatedItem,
       ];
       setTabItems(updatedItems);
+      localStorage.setItem("tabItems", JSON.stringify(updatedItems));
     } else {
       const updatedItems = { ...tabItems };
       Object.keys(updatedItems).forEach((category) => {
@@ -141,26 +145,7 @@ const Admin = () => {
         );
       });
       setTabItems(updatedItems);
-    }
-
-    try {
-      const response = await fetch("/api/updateCatalog", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(tabItems),
-      });
-
-      const result = await response.json();
-      console.log("Ответ сервера:", result);
-
-      if (!response.ok) {
-        throw new Error(result.error || "Ошибка обновления каталога");
-      }
-
-      alert("Каталог успешно обновлён!");
-    } catch (error: any) {
-      console.error("Полная ошибка:", error);
-      alert("Ошибка: " + error.message);
+      localStorage.setItem("tabItems", JSON.stringify(updatedItems));
     }
 
     setModalOpen(false);
@@ -177,21 +162,9 @@ const Admin = () => {
     });
 
     setTabItems(updatedItems);
+    localStorage.setItem("tabItems", JSON.stringify(updatedItems));
     setModalOpen(false);
-
-    try {
-      const response = await fetch("/api/updateCatalog", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedItems),
-      });
-
-      if (!response.ok) throw new Error("Ошибка обновления каталога");
-
-      alert("Товар успешно удалён!");
-    } catch (error: any) {
-      alert("Ошибка: " + error.message);
-    }
+    alert("Товар успешно удалён!");
   };
 
   const handleAddCategory = () => {
